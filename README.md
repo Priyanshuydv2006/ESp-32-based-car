@@ -82,7 +82,7 @@ ESP32 -------- BTS7960 -------- Motors
 1. Clone this repository
 
 ```
-git clone https://github.com/yourusername/ESP32-Bluetooth-RC-Car.git
+git clone https://github.com/Priyanshuydv2006/ESp-32-based-car
 ```
 
 2. Open the project in Arduino IDE.
@@ -109,11 +109,10 @@ git clone https://github.com/yourusername/ESP32-Bluetooth-RC-Car.git
 
 ## 🎥 Demo
 
-Upload a demonstration video on YouTube (Unlisted is fine) and paste the link here.
 
 Example:
 
-https://youtu.be/your-video-link
+https:
 
 ---
 
