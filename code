@@ -1,0 +1,77 @@
+#include "BluetoothSerial.h"
+
+// IBT-2 #1 LEFT motors
+#define L_RPWM  18
+#define L_LPWM  19
+#define L_R_EN  21
+#define L_L_EN  22
+
+// IBT-2 #2 RIGHT motors
+#define R_RPWM  25
+#define R_LPWM  26
+#define R_R_EN  27
+#define R_L_EN  14
+
+#define PWM_FREQ  1000
+#define PWM_RES   8
+
+#define CH_L_FWD  0
+#define CH_L_REV  1
+#define CH_R_FWD  2
+#define CH_R_REV  3
+
+BluetoothSerial BT;
+int speed = 200;
+
+void setup() {
+  Serial.begin(115200);
+  BT.begin("ESP32_4WD_CAR");
+
+  pinMode(L_R_EN, OUTPUT); digitalWrite(L_R_EN, HIGH);
+  pinMode(L_L_EN, OUTPUT); digitalWrite(L_L_EN, HIGH);
+  pinMode(R_R_EN, OUTPUT); digitalWrite(R_R_EN, HIGH);
+  pinMode(R_L_EN, OUTPUT); digitalWrite(R_L_EN, HIGH);
+
+  ledcSetup(CH_L_FWD, PWM_FREQ, PWM_RES);
+  ledcSetup(CH_L_REV, PWM_FREQ, PWM_RES);
+  ledcSetup(CH_R_FWD, PWM_FREQ, PWM_RES);
+  ledcSetup(CH_R_REV, PWM_FREQ, PWM_RES);
+
+  ledcAttachPin(L_RPWM, CH_L_FWD);
+  ledcAttachPin(L_LPWM, CH_L_REV);
+  ledcAttachPin(R_RPWM, CH_R_FWD);
+  ledcAttachPin(R_LPWM, CH_R_REV);
+
+  stopCar();
+}
+
+void setLeft(int fwd, int rev)  { ledcWrite(CH_L_FWD, fwd); ledcWrite(CH_L_REV, rev); }
+void setRight(int fwd, int rev) { ledcWrite(CH_R_FWD, fwd); ledcWrite(CH_R_REV, rev); }
+
+void forward()   { setLeft(speed, 0);       setRight(speed, 0); }
+void backward()  { setLeft(0, speed);       setRight(0, speed); }
+void turnLeft()  { setLeft(speed/3, 0);     setRight(speed, 0); }
+void turnRight() { setLeft(speed, 0);       setRight(speed/3, 0); }
+void spinLeft()  { setLeft(0, speed);       setRight(speed, 0); }
+void spinRight() { setLeft(speed, 0);       setRight(0, speed); }
+void stopCar()   { setLeft(0, 0);           setRight(0, 0); }
+
+void loop() {
+  if (BT.available()) {
+    char cmd = BT.read();
+    switch (cmd) {
+      case 'F': forward();   break;
+      case 'B': backward();  break;
+      case 'L': turnLeft();  break;
+      case 'R': turnRight(); break;
+      case 'X': spinLeft();  break;
+      case 'Z': spinRight(); break;
+      case 'S': stopCar();   break;
+      case '1': speed = 100; break;
+      case '2': speed = 180; break;
+      case '3': speed = 255; break;
+      case '+': speed = min(255, speed + 20); break;
+      case '-': speed = max(50,  speed - 20); break;
+    }
+  }
+}
