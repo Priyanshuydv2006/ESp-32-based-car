@@ -67,6 +67,9 @@ A Bluetooth-controlled RC car built using the ESP32 microcontroller and BTS7960 
 ## 🔌 Circuit Diagram
 
 
+![image alt](https://github.com/Priyanshuydv2006/ESp-32-based-car/blob/cf5c56a3dc9c2cbde3308edf7fefdf000d8fedbc/circuit_1.PNG)
+
+
 
 ```
 ESP32 -------- BTS7960 -------- Motors
